@@ -1,0 +1,25 @@
+# Configuration for apple/swift-openapi-generator.
+# Regenerate with `make generate` (or `make generate-fetch` to pull the latest spec).
+generate:
+  - types
+  - client
+accessModifier: public
+namingStrategy: idiomatic
+
+# The full spec is ~150 operations / ~185k lines of Swift and roughly doubles
+# clean build times. Only the tags most chat clients need are generated.
+# Add any tag listed in openapi.json (`"tags":` on each operation) to widen it,
+# e.g. "Analytics", "Batch", "Files", "Guardrails", "Images", "Presets",
+# "Rerank", "TTS", "STT", "Video Generation", "Workspaces".
+filter:
+  tags:
+    - Chat
+    - Responses
+    - Anthropic Messages
+    - Models
+    - Credits
+    - Generations
+    - API Keys
+    - Endpoints
+    - Providers
+    - Embeddings
