@@ -38,10 +38,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "$branch"
           git add openapi Sources/OpenRouterAPI
-          git commit -m "Update OpenRouter OpenAPI spec"
+          git commit -m "feat(api): update OpenRouter OpenAPI spec"
           git push --force origin "$branch"
-          gh pr create --head "$branch" --title "Update OpenRouter OpenAPI spec ($(date -u +%Y-%m-%d))" --body "Automated weekly spec update.
+          gh pr create --head "$branch" --title "feat(api): update OpenRouter OpenAPI spec ($(date -u +%Y-%m-%d))" --body "Automated weekly spec update.
+
+          If the regenerated types break the public API, change the title to \`feat(api)!: …\` before squash-merging.
 
           \`make check\` against the new spec: **$CHECK_OUTCOME**.
 
-          Review the diff in \`openapi/openapi.json\`, fix the hand-written layer if needed, update the wiki (see the \`regenerate-api\` skill), and add a CHANGELOG entry. PRs opened by GitHub Actions don't trigger CI on their own; push a commit (or close and reopen) to run it." || echo "A PR for $branch already exists."
+          Review the diff in \`openapi/openapi.json\`, fix the hand-written layer if needed and update the wiki (see the \`regenerate-api\` skill). PRs opened by GitHub Actions don't trigger CI on their own; push a commit (or close and reopen) to run it." || echo "A PR for $branch already exists."

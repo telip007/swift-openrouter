@@ -6,16 +6,18 @@
 #   make test-linux      run the tests in a Linux container (needs Docker)
 #   make generate        regenerate Sources/OpenRouterAPI from openapi/openapi.json
 #   make generate-fetch  download the latest spec first, then regenerate
-#   make release VERSION=x.y.z  cut a release (see wiki/concepts/releasing.md)
 
 SOURCES := Sources/OpenRouter Tests Package.swift
 MIN_COVERAGE ?= 90
 SWIFT_IMAGE ?= swift:6.2-noble
 
-.PHONY: bootstrap fix format lint wiki-lint build test coverage check test-linux generate generate-fetch release clean
+.PHONY: bootstrap fix format lint wiki-lint build test coverage check test-linux generate generate-fetch clean
 
 bootstrap:
-	@command -v swiftlint >/dev/null || brew install swiftlint
+	@command -v swiftlint >/dev/null || { \
+		if command -v brew >/dev/null; then brew install swiftlint; \
+		else echo "Install SwiftLint: https://github.com/realm/SwiftLint#installation (Linux: release binary or 'swift run swiftlint')"; exit 1; fi; }
+	@swift format --version >/dev/null || { echo "swift-format ships with Swift 6 toolchains; install Swift 6.2+"; exit 1; }
 	git config core.hooksPath .githooks
 
 fix format:
@@ -51,10 +53,6 @@ generate:
 
 generate-fetch:
 	Scripts/generate.sh --fetch
-
-release:
-	@test -n "$(VERSION)" || { echo "usage: make release VERSION=x.y.z"; exit 1; }
-	Scripts/release.sh $(VERSION)
 
 clean:
 	swift package clean

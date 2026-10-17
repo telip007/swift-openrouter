@@ -6,6 +6,11 @@ updated: 2026-10-17
 
 # 0009 Versioning and releases
 
+Superseded in part by [0010](0010-conventional-commits-and-release-please.md):
+the release mechanics below (hand-written changelog, `make release`) were
+replaced by Conventional Commits and release-please. The versioning policy
+stands.
+
 ## Context
 
 Consumers pin versions through SwiftPM, which resolves semantic-version tags.

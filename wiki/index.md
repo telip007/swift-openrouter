@@ -12,7 +12,7 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [Platforms and transports](concepts/platforms-and-transports.md): supported platforms, minimum versions, and why Apple uses URLSession while Linux uses AsyncHTTPClient.
 - [Testing](concepts/testing.md): how the tests are structured, the mock transport, spec-example conformance tests and the coverage gate.
 - [Backpressure setup](concepts/backpressure-setup.md): every automated check in this repository, where it runs, and the traps hit while wiring it up.
-- [Releasing](concepts/releasing.md): versioning, the changelog, how a release is cut and published, and the automated spec-update and dependency PRs.
+- [Releasing](concepts/releasing.md): Conventional Commits, release-please release PRs, SemVer bumps, and the automated spec-update and dependency PRs.
 - [Agent workflow](concepts/agent-workflow.md): how AGENTS.md, skills, hooks and the wiki make every agent session follow the same rules.
 
 ## Decisions
@@ -25,7 +25,8 @@ Start here. Conventions: [SCHEMA.md](SCHEMA.md). Timeline: [log.md](log.md).
 - [0006 LLM-maintained wiki](decisions/0006-llm-wiki.md): project knowledge lives in wiki/, maintained by agents and enforced by hooks and lint.
 - [0007 Apache 2.0 license](decisions/0007-apache-2-license.md): permissive license with an explicit patent grant; trademarks are not covered.
 - [0008 Commit the OpenAPI spec](decisions/0008-commit-the-spec.md): the spec is committed rather than fetched, because it can't be pinned and generated code embeds it anyway.
-- [0009 Versioning and releases](decisions/0009-versioning-and-releases.md): SemVer starting at 0.x, plain version tags, Keep a Changelog, scripted releases and automated spec-update PRs.
+- [0009 Versioning and releases](decisions/0009-versioning-and-releases.md): SemVer starting at 0.x, plain version tags (release mechanics superseded by 0010).
+- [0010 Conventional Commits and release-please](decisions/0010-conventional-commits-and-release-please.md): commit headers drive SemVer bumps and the changelog; release-please opens release PRs that tag and publish on merge.
 
 ## Sources
 

@@ -1,52 +1,62 @@
 ---
 title: Releasing
-summary: Versioning, the changelog, how a release is cut and published, and the automated spec-update and dependency PRs.
+summary: Conventional Commits, release-please release PRs, SemVer bumps, and the automated spec-update and dependency PRs.
 updated: 2026-10-17
 ---
 
 # Releasing
 
-Policy: [0009 Versioning and releases](../decisions/0009-versioning-and-releases.md).
+Policy: [0010 Conventional Commits and release-please](../decisions/0010-conventional-commits-and-release-please.md)
+(supersedes the release mechanics of [0009](../decisions/0009-versioning-and-releases.md)).
 
-## Day to day
+## How a change becomes a release
 
-- Every user-visible change adds a line under **Unreleased** in
-  [CHANGELOG.md](../../CHANGELOG.md) (enforced by the PR checklist and review).
-- [Dependabot](../../.github/dependabot.yml) opens monthly PRs for GitHub
-  Actions and Swift dependencies.
-- [spec-update.yml](../../.github/workflows/spec-update.yml) runs every Monday
-  (and on demand): `make generate-fetch`, `make check`, and a PR if the spec
-  changed. The PR body states whether `make check` passed.
+1. Every commit header follows Conventional Commits. Locally the
+   [commit-msg hook](../../.githooks/commit-msg) checks it with
+   [check-commit-message.py](../../Scripts/check-commit-message.py), and CI's
+   `pr-title` job checks PR titles.
+2. PRs are **squash-merged with the PR title as the commit message**
+   (repository setting). One PR is one conventional commit on `main`.
+3. On every push to `main`,
+   [release-please](../../.github/workflows/release-please.yml) updates an
+   open `chore: release x.y.z` PR. It computes the next version from the
+   commits since the last tag, writes the [CHANGELOG](../../CHANGELOG.md)
+   section, and bumps the annotated version strings (`x-release-please-version`
+   in the User-Agent and the README install snippet), plus `version.txt` and
+   `.release-please-manifest.json`.
+4. A maintainer merges the release PR. release-please then tags `x.y.z`
+   (no `v`) and publishes the GitHub release with the changelog section.
 
-## Cutting a release (maintainers)
+| Commit | Bump on 0.x | Bump from 1.0 |
+| --- | --- | --- |
+| `fix`, `perf`, `deps` | patch | patch |
+| `feat` | minor | minor |
+| `!` / `BREAKING CHANGE:` | minor (`bump-minor-pre-major`) | major |
+| `docs`, `refactor`, `test`, `build`, `ci`, `chore`, `style` | none | none |
 
-```sh
-make release VERSION=0.2.0
-```
+Config: [release-please-config.json](../../release-please-config.json).
+Changelog sections shown: Features, Bug Fixes, Performance, Reverts,
+Documentation, Dependencies.
 
-[Scripts/release.sh](../../Scripts/release.sh) refuses unless you're on a
-clean `main` in sync with `origin`, the tag is new, and **Unreleased** isn't
-empty. It then:
+## Automated PRs
 
-1. moves **Unreleased** under `## [0.2.0] - <date>`,
-2. sets the version in the `User-Agent`
-   ([HeadersMiddleware.swift](../../Sources/OpenRouter/Middleware/HeadersMiddleware.swift))
-   and in the README's install snippet,
-3. runs `make check`, commits `Release 0.2.0`, creates an annotated tag
-   `0.2.0` and pushes both.
-
-[release.yml](../../.github/workflows/release.yml) then publishes the GitHub
-release, using that CHANGELOG section as the notes.
+- [spec-update.yml](../../.github/workflows/spec-update.yml), weekly:
+  `feat(api): update OpenRouter OpenAPI spec (date)`. Retitle it to
+  `feat(api)!:` if regenerated types break the public API.
+- [Dependabot](../../.github/dependabot.yml), monthly: `ci: bump …` for
+  actions (no release), `deps: bump …` for Swift dependencies (patch release).
 
 ## Gotchas
 
-- PRs opened by GitHub Actions with `GITHUB_TOKEN` don't trigger other
-  workflows, so CI doesn't run on spec-update PRs automatically. Push a
-  commit or close and reopen the PR. That's why the workflow runs
-  `make check` itself.
-- The repository setting "Allow GitHub Actions to create and approve pull
-  requests" must stay enabled for spec-update PRs.
-- Tags have no `v` prefix (`0.2.0`). SwiftPM accepts both forms, but plain
-  versions are the convention across the Swift ecosystem.
-- After the first tag, the package can be submitted to the Swift Package
-  Index, which also hosts the DocC documentation (`.spi.yml`).
+- PRs opened with `GITHUB_TOKEN` (release-please, spec updates) don't trigger
+  other workflows, so CI doesn't run on them automatically. Close and
+  reopen, or push a commit, before merging. Using a fine-grained PAT as the
+  release-please token would fix this, at the cost of a secret to manage.
+- The type is about the effect on **users of the package**: a CI-only change
+  is `ci:`, not `fix:`, even if it fixes CI.
+- Commits made before 0.1.0 don't follow the convention. release-please only
+  reads commits after the last release tag.
+- The "Allow GitHub Actions to create and approve pull requests" repository
+  setting must stay enabled.
+- After a tag, the Swift Package Index (if submitted) picks up the version
+  and rebuilds the DocC docs (`.spi.yml`).

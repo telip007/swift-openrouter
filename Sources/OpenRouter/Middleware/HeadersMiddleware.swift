@@ -4,7 +4,7 @@ import OpenAPIRuntime
 
 /// Adds authentication, attribution and user-agent headers to every request.
 struct HeadersMiddleware: ClientMiddleware {
-    static let userAgent = "swift-openrouter/0.1.0"
+    static let userAgent = "swift-openrouter/0.1.0"  // x-release-please-version
 
     let apiKey: String
     let appURL: String?

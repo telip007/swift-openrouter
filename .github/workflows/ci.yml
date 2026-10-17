@@ -4,12 +4,24 @@ on:
   push:
     branches: [main]
   pull_request:
+    types: [opened, edited, synchronize, reopened]
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  pr-title:
+    name: PR title follows Conventional Commits
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check PR title (it becomes the squash-merge commit)
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: python3 -I Scripts/check-commit-message.py --title "$TITLE"
+
   lint:
     name: Lint (format, SwiftLint, wiki)
     runs-on: macos-26
