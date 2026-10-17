@@ -31,7 +31,7 @@ one API for hundreds of models across providers.
 ```swift
 // Package.swift
 dependencies: [
-    .package(url: "https://github.com/telip007/swift-openrouter", branch: "main"),
+    .package(url: "https://github.com/telip007/swift-openrouter", from: "0.1.0"),
 ],
 targets: [
     .target(name: "MyApp", dependencies: [

@@ -7,6 +7,8 @@ releases may contain breaking changes; they're called out under **Changed**.
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-10-17
+
 ### Added
 
 - `OpenRouterClient` with `chat` (send, stream), `models`, `credits`,
