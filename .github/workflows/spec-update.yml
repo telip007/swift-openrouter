@@ -1,0 +1,47 @@
+name: OpenAPI spec update
+
+# Weekly: fetch OpenRouter's latest OpenAPI spec, regenerate, run the full
+# check, and open a pull request if anything changed.
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install SwiftLint
+        run: brew install swiftlint
+      - run: make generate-fetch
+      - name: Check for changes
+        id: diff
+        run: echo "changed=$([[ -n "$(git status --porcelain -- openapi Sources/OpenRouterAPI)" ]] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Run checks against the new spec
+        if: steps.diff.outputs.changed == 'true'
+        id: check
+        continue-on-error: true
+        run: make check
+      - name: Open pull request
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECK_OUTCOME: ${{ steps.check.outcome }}
+        run: |
+          branch="spec-update/$(date -u +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git add openapi Sources/OpenRouterAPI
+          git commit -m "Update OpenRouter OpenAPI spec"
+          git push --force origin "$branch"
+          gh pr create --head "$branch" --title "Update OpenRouter OpenAPI spec ($(date -u +%Y-%m-%d))" --body "Automated weekly spec update.
+
+          \`make check\` against the new spec: **$CHECK_OUTCOME**.
+
+          Review the diff in \`openapi/openapi.json\`, fix the hand-written layer if needed, update the wiki (see the \`regenerate-api\` skill), and add a CHANGELOG entry. PRs opened by GitHub Actions don't trigger CI on their own; push a commit (or close and reopen) to run it." || echo "A PR for $branch already exists."

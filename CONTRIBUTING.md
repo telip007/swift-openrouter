@@ -29,6 +29,7 @@ and also lint each edited file. See `wiki/concepts/agent-workflow.md`.
 - Update the wiki (`wiki/`) when you change behaviour or make a decision, and
   append a line to `wiki/log.md`. Reviewers will ask for it.
 - Public API changes: update `README.md` and `ReadmeExampleTests.swift`.
+- Add a line under **Unreleased** in `CHANGELOG.md` for user-visible changes.
 
 ## Pull requests
 

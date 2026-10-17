@@ -44,6 +44,8 @@ A Swift client for the OpenRouter API. Two targets:
   should link the relevant docs page.
 - Never name a static member `none` (it collides with `Optional.none`).
 - Keep `README.md` and `Tests/OpenRouterTests/ReadmeExampleTests.swift` in sync.
+- User-visible changes get an entry under **Unreleased** in `CHANGELOG.md`.
+  Releases are cut by maintainers only (`make release VERSION=x.y.z`).
 - Platform-conditional code (`canImport`, transports) must keep Linux working.
   CI checks macOS, iOS/tvOS/watchOS/visionOS builds and Linux.
 - Public repository: never put personal data, local paths, machine details

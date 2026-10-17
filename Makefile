@@ -6,12 +6,13 @@
 #   make test-linux      run the tests in a Linux container (needs Docker)
 #   make generate        regenerate Sources/OpenRouterAPI from openapi/openapi.json
 #   make generate-fetch  download the latest spec first, then regenerate
+#   make release VERSION=x.y.z  cut a release (see wiki/concepts/releasing.md)
 
 SOURCES := Sources/OpenRouter Tests Package.swift
 MIN_COVERAGE ?= 90
 SWIFT_IMAGE ?= swift:6.2-noble
 
-.PHONY: bootstrap fix format lint wiki-lint build test coverage check test-linux generate generate-fetch clean
+.PHONY: bootstrap fix format lint wiki-lint build test coverage check test-linux generate generate-fetch release clean
 
 bootstrap:
 	@command -v swiftlint >/dev/null || brew install swiftlint
@@ -48,6 +49,10 @@ generate:
 
 generate-fetch:
 	Scripts/generate.sh --fetch
+
+release:
+	@test -n "$(VERSION)" || { echo "usage: make release VERSION=x.y.z"; exit 1; }
+	Scripts/release.sh $(VERSION)
 
 clean:
 	swift package clean

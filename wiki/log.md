@@ -16,3 +16,6 @@ Recorded decisions 0001–0008: generation, filtering, ergonomic layer, platform
 
 ## [2026-10-17] update | Initial implementation
 Documented architecture, pipeline patches, errors (incl. errors after 200 OK, typed error_type, Retry-After), retries, streaming, platforms, testing, tooling and agent workflow.
+
+## [2026-10-17] decision | Versioning and releases
+SemVer from 0.1.0, CHANGELOG with Unreleased, `make release`, release workflow, weekly spec-update PRs, Dependabot.
