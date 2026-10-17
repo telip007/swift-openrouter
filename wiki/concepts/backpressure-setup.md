@@ -24,8 +24,8 @@ based on [Don't waste your back pressure](../sources/dont-waste-your-backpressur
 | Generated code matches spec + generator | `make generate` + clean diff | CI |
 
 `make check` = wiki lint + format lint + SwiftLint + build + tests + coverage.
-Git hooks in [.githooks](../../.githooks/pre-commit) run lint on commit and
-`make check` on push.
+Git hooks in [.githooks](../../.githooks/pre-commit) run lint on commit, and
+`make check` plus `make test-linux` (when Docker is running) on push.
 
 ## Gotchas
 

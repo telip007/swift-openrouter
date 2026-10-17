@@ -19,3 +19,6 @@ Documented architecture, pipeline patches, errors (incl. errors after 200 OK, ty
 
 ## [2026-10-17] decision | Versioning and releases
 SemVer from 0.1.0, CHANGELOG with Unreleased, `make release`, release workflow, weekly spec-update PRs, Dependabot.
+
+## [2026-10-17] update | Linux build fix and local Linux gate
+First CI run failed on Linux: `TimeAmount.nanoseconds` needs `import NIOCore` under MemberImportVisibility. Added NIOCore (Linux-only); pre-push now runs `make test-linux` when Docker is up.

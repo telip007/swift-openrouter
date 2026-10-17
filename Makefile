@@ -40,9 +40,11 @@ coverage: test
 
 check: lint build coverage
 
+# Build artefacts live in a named volume, so only the first run is slow.
+# Needs ~6 GB of Docker memory to compile the generated target.
 test-linux:
-	docker run --rm -v "$(CURDIR)":/src:ro -w /src $(SWIFT_IMAGE) \
-		swift test --parallel --scratch-path /tmp/build
+	docker run --rm -v "$(CURDIR)":/src -v swift-openrouter-linux-build:/build -w /src $(SWIFT_IMAGE) \
+		swift test --parallel --scratch-path /build
 
 generate:
 	Scripts/generate.sh

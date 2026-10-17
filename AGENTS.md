@@ -30,7 +30,7 @@ A Swift client for the OpenRouter API. Two targets:
 | `make bootstrap` | install SwiftLint (Homebrew), enable git hooks |
 | `make fix` | auto-format |
 | `make check` | wiki lint + swift-format + SwiftLint + build + tests + 90% coverage |
-| `make test-linux` | tests in a `swift:6.2-noble` container (needs several GB of Docker RAM) |
+| `make test-linux` | tests in a `swift:6.2-noble` container (needs ~6 GB of Docker memory; runs in pre-push when Docker is up) |
 | `make generate` / `make generate-fetch` | regenerate the API layer (from the committed / latest spec) |
 
 ## Rules

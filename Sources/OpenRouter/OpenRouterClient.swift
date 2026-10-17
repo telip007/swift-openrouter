@@ -5,6 +5,7 @@ public import OpenAPIRuntime
 import OpenAPIURLSession
 #else
 import AsyncHTTPClient
+import NIOCore
 import OpenAPIAsyncHTTPClient
 #endif
 

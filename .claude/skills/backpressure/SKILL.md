@@ -14,9 +14,9 @@ human reading a diff (see `wiki/sources/dont-waste-your-backpressure.md`).
 2. `make check` and read every diagnostic in full. They're written to be
    actionable.
 3. Fix the cause, then run again. Repeat until it passes.
-4. If you touched transports, networking or anything platform-conditional,
-   also run `make test-linux` (Docker). Linux uses AsyncHTTPClient, not
-   URLSession.
+4. Before pushing, make sure Docker is running: the pre-push hook then runs
+   `make test-linux`. Linux compiles code paths macOS never sees
+   (AsyncHTTPClient, NIO), so a green macOS build proves nothing about Linux.
 5. Only then report the work as done, quoting the final `make check` result.
 
 ## Rules

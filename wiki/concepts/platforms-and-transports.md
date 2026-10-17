@@ -40,5 +40,10 @@ the code selects them with `#if canImport(OpenAPIURLSession)`. Any
 - Network errors differ: `URLError` on Apple, `HTTPClientError` on Linux.
   [Retries](retries.md) classify both.
 - `FoundationNetworking` must be imported on Linux for `URLError`/`URLSession`.
-- Run `make test-linux` (Docker, `swift:6.2-noble`) after touching anything
-  platform-conditional. CI runs it on every push.
+- With `MemberImportVisibility`, using a member such as `TimeAmount.nanoseconds`
+  requires importing its defining module (`NIOCore`), even when the type
+  arrives through another module's API. This broke the first Linux CI run;
+  `NIOCore` is now a Linux-only dependency.
+- `make test-linux` (Docker, `swift:6.2-noble`) runs in the pre-push hook
+  whenever Docker is up, with build artefacts cached in the
+  `swift-openrouter-linux-build` volume. CI runs it on every push too.

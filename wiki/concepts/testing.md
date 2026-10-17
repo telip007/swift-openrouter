@@ -44,5 +44,7 @@ See [Backpressure setup](backpressure-setup.md).
 ## Gotchas
 
 - Mocked sleeps don't advance the clock (see [Retries](retries.md)).
-- Linux tests need several GB of RAM to compile the generated target. Small
-  Docker VMs get the compiler killed (signal 9); CI runners are fine.
+- Linux tests need several GB of RAM to compile the generated target. Docker
+  Desktop's default of 1 GB gets the compiler killed (signal 9); give it
+  ~6 GB (Settings → Resources). The first run takes ~2–3 minutes; later runs
+  reuse the cached volume.

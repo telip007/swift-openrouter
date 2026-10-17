@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
-# Nothing leaves the machine unless the full gate passes.
+# Nothing leaves the machine unless the full gate passes, on macOS and, when
+# Docker is available, on Linux too (Linux-only code paths compile only there).
 set -euo pipefail
-exec make check
+make check
+if docker info >/dev/null 2>&1; then
+    make test-linux
+else
+    echo "warning: Docker isn't running, skipping 'make test-linux'. CI will run the Linux build." >&2
+fi

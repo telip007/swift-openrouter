@@ -146,6 +146,11 @@ let openRouter = OpenRouterClient(
 Retries use exponential backoff with jitter, honour `Retry-After`, and cover 429, 5xx and
 transient network failures.
 
+**Server-side Swift on macOS:** the default transport is URLSession on Apple platforms and
+AsyncHTTPClient (SwiftNIO) on Linux. To use AsyncHTTPClient everywhere, add
+[swift-openapi-async-http-client](https://github.com/swift-server/swift-openapi-async-http-client)
+and pass `transport: AsyncHTTPClientTransport()`.
+
 ## Everything else
 
 The convenience API covers chat, models, credits, generations and the current API key.

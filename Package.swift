@@ -32,6 +32,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-http-types", from: "1.8.0"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client", from: "1.5.0"),
         .package(url: "https://github.com/swift-server/async-http-client", from: "1.36.2"),
+        .package(url: "https://github.com/apple/swift-nio", from: "2.104.0"),
     ],
     targets: [
         // Generated from openapi/openapi.json by Scripts/generate.sh. Do not edit.
@@ -63,6 +64,11 @@ let package = Package(
                 .product(
                     name: "AsyncHTTPClient",
                     package: "async-http-client",
+                    condition: .when(platforms: [.linux]),
+                ),
+                .product(
+                    name: "NIOCore",
+                    package: "swift-nio",
                     condition: .when(platforms: [.linux]),
                 ),
             ],
