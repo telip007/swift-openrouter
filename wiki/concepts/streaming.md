@@ -1,7 +1,7 @@
 ---
 title: Streaming
 summary: How chat streams are decoded, terminated and accumulated, and the SSE quirks involved.
-updated: 2026-10-17
+updated: 2026-10-18
 ---
 
 # Streaming
@@ -39,8 +39,16 @@ Implementation: `chat.stream(_:)` and `HTTPBody.chatStreamChunks()` in
 - Tool calls stream as fragments keyed by `index`. The first fragment carries
   `id` and `function.name`, later ones append to `function.arguments`.
   Several tool calls can interleave.
+- `reasoning_details` stream as fragments too: a `reasoning.text` or
+  `reasoning.summary` with the same `index` as the previous detail continues
+  it (text appended, a later `signature` kept); anything else starts a new
+  detail. Encrypted and server-tool-call details are kept as they come.
 - `message` returns a `ChatAssistantMessage` ready to append to the history,
-  with `tool_calls` omitted when empty (some providers reject `[]`).
+  with `tool_calls` omitted when empty (some providers reject `[]`), and with
+  `reasoning` and `reasoning_details` set when the stream had them, so a
+  streamed reply goes back into the history like a non-streamed one. Models
+  that continue from their reasoning across tool calls (Anthropic's signed
+  thinking, Gemini's thought signatures) need these fields sent back.
 
 ## Gotchas
 

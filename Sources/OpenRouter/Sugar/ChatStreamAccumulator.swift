@@ -2,7 +2,9 @@
 ///
 /// Tool calls arrive in fragments: the first fragment for a given `index`
 /// carries the id and function name, later ones append to the JSON
-/// arguments string. The accumulator stitches them back together.
+/// arguments string. The accumulator stitches them back together, and
+/// likewise merges `reasoning_details` fragments, so the message can be sent
+/// back with its reasoning intact.
 ///
 /// Only the first choice is tracked; OpenRouter streams one choice.
 public struct ChatStreamAccumulator: Sendable {
@@ -14,6 +16,9 @@ public struct ChatStreamAccumulator: Sendable {
     public private(set) var text = ""
     /// The reasoning text received so far.
     public private(set) var reasoning = ""
+    /// The structured reasoning received so far, fragments merged. See
+    /// [reasoning tokens](https://openrouter.ai/docs/guides/best-practices/reasoning-tokens).
+    public private(set) var reasoningDetails: [ReasoningDetail] = []
     /// The finish reason, once received. See ``FinishReason``.
     public private(set) var finishReason: String?
     /// Token usage, from the final chunk.
@@ -39,6 +44,13 @@ public struct ChatStreamAccumulator: Sendable {
         finishReason = choice.finishReason ?? finishReason
         text += choice.delta.content ?? ""
         reasoning += choice.delta.reasoning ?? ""
+        for detail in choice.delta.reasoningDetails ?? [] {
+            if let last = reasoningDetails.indices.last, let merged = reasoningDetails[last].merging(detail) {
+                reasoningDetails[last] = merged
+            } else {
+                reasoningDetails.append(detail)
+            }
+        }
         for fragment in choice.delta.toolCalls ?? [] {
             var call = partialToolCalls[fragment.index, default: PartialToolCall()]
             call.id += fragment.id ?? ""
@@ -55,8 +67,34 @@ public struct ChatStreamAccumulator: Sendable {
         }
     }
 
-    /// The assembled assistant message, ready to append to the conversation.
+    /// The assembled assistant message, ready to append to the conversation,
+    /// with its reasoning so the model can continue from it.
     public var message: ChatAssistantMessage {
-        ChatAssistantMessage(text: text.isEmpty ? nil : text, toolCalls: toolCalls)
+        var message = ChatAssistantMessage(text: text.isEmpty ? nil : text, toolCalls: toolCalls)
+        message.reasoning = reasoning.isEmpty ? nil : reasoning
+        message.reasoningDetails = reasoningDetails.isEmpty ? nil : reasoningDetails
+        return message
+    }
+}
+
+extension ReasoningDetail {
+    /// This detail with `fragment` appended, when `fragment` continues it: a
+    /// text or summary of the same index. `nil` otherwise.
+    fileprivate func merging(_ fragment: Self) -> Self? {
+        switch (self, fragment) {
+        case (.reasoning_text(var detail), .reasoning_text(let next)) where detail.index == next.index:
+            detail.text = (detail.text ?? "") + (next.text ?? "")
+            detail.signature = next.signature ?? detail.signature
+            detail.id = detail.id ?? next.id
+            detail.format = detail.format ?? next.format
+            return .reasoning_text(detail)
+        case (.reasoning_summary(var detail), .reasoning_summary(let next)) where detail.index == next.index:
+            detail.summary += next.summary
+            detail.id = detail.id ?? next.id
+            detail.format = detail.format ?? next.format
+            return .reasoning_summary(detail)
+        default:
+            return nil
+        }
     }
 }

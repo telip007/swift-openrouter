@@ -24,6 +24,8 @@ public typealias ChatTool = Components.Schemas.ChatFunctionTool
 public typealias ChatToolCall = Components.Schemas.ChatToolCall
 /// Whether and which tools the model must call: `.auto`, `.disabled`, `.required`, `.function(_:)`.
 public typealias ChatToolChoice = Components.Schemas.ChatToolChoice
+/// One piece of a model's structured reasoning: text, a summary, encrypted data or a server tool call.
+public typealias ReasoningDetail = Components.Schemas.ReasoningDetailUnion
 /// Token counts and cost of a completion.
 public typealias ChatUsage = Components.Schemas.ChatUsage
 

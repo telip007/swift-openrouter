@@ -25,3 +25,6 @@ First CI run failed on Linux: `TimeAmount.nanoseconds` needs `import NIOCore` un
 
 ## [2026-10-17] decision | Conventional Commits and release-please
 Replaced the hand-written changelog and `make release` with Conventional Commits (commit-msg hook, PR-title CI check, squash merges) and release-please. Pre-push is now platform-aware for Linux developers.
+
+## [2026-10-18] update | Reasoning in streamed messages
+`ChatStreamAccumulator` now merges `reasoning_details` fragments and puts `reasoning` and `reasoning_details` on `message`, which used to drop them. Added the `ReasoningDetail` type alias.

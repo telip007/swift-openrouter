@@ -53,4 +53,49 @@ struct StreamAccumulatorTests {
         #expect(accumulator.message.toolCalls == nil)
         #expect(accumulator.message.text == "Hi")
     }
+
+    @Test("merges reasoning detail fragments and keeps them on the message")
+    func reasoningDetails() throws {
+        var accumulator = ChatStreamAccumulator()
+        let deltas = [
+            #"{"reasoning":"Let ","reasoning_details":[{"type":"reasoning.text","text":"Let ","id":"r1","format":"anthropic-claude-v1","index":0}]}"#,
+            #"{"reasoning":"me.","reasoning_details":[{"type":"reasoning.text","text":"me.","index":0}]}"#,
+            #"{"reasoning_details":[{"type":"reasoning.text","signature":"sig","index":0}]}"#,
+            #"{"reasoning_details":[{"type":"reasoning.summary","summary":"Short ","index":1}]}"#,
+            #"{"reasoning_details":[{"type":"reasoning.summary","summary":"plan.","index":1}]}"#,
+            #"{"reasoning_details":[{"type":"reasoning.encrypted","data":"abc","index":2}]}"#,
+            #"{"reasoning_details":[{"type":"reasoning.text","text":"Again.","index":3}]}"#,
+            #"{"content":"Done"}"#,
+        ]
+        for delta in deltas {
+            accumulator.add(try chunk(delta))
+        }
+
+        let details = accumulator.reasoningDetails
+        #expect(details.count == 4)
+        guard case .reasoning_text(let text) = details[0], case .reasoning_summary(let summary) = details[1],
+            case .reasoning_encrypted(let encrypted) = details[2], case .reasoning_text(let again) = details[3]
+        else {
+            Issue.record("unexpected details: \(details)")
+            return
+        }
+        #expect(text.text == "Let me.")
+        #expect(text.signature == "sig")
+        #expect(text.id == "r1")
+        #expect(text.format == "anthropic-claude-v1")
+        #expect(summary.summary == "Short plan.")
+        #expect(encrypted.data == "abc")
+        #expect(again.text == "Again.")
+        #expect(accumulator.message.reasoning == "Let me.")
+        #expect(accumulator.message.reasoningDetails == details)
+        #expect(accumulator.message.text == "Done")
+    }
+
+    @Test("a stream without reasoning leaves it off the message")
+    func noReasoning() throws {
+        var accumulator = ChatStreamAccumulator()
+        accumulator.add(try chunk(#"{"content":"Hi"}"#, finishReason: "stop"))
+        #expect(accumulator.message.reasoning == nil)
+        #expect(accumulator.message.reasoningDetails == nil)
+    }
 }
