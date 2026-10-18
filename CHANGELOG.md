@@ -5,6 +5,13 @@ from [Conventional Commits](https://www.conventionalcommits.org/). The project
 follows [Semantic Versioning](https://semver.org/); while on `0.x`, breaking
 changes bump the minor version.
 
+## [0.1.1](https://github.com/telip007/swift-openrouter/compare/swift-openrouter-0.1.0...swift-openrouter-0.1.1) (2026-10-18)
+
+
+### Bug Fixes
+
+* **chat:** keep reasoning on streamed messages ([644e34d](https://github.com/telip007/swift-openrouter/commit/644e34d9c235634d81beba1f2af11e66ae68ee8a))
+
 ## [0.1.0](https://github.com/telip007/swift-openrouter/releases/tag/0.1.0) (2026-10-17)
 
 ### Features
