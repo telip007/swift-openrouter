@@ -47395,7 +47395,7 @@ extension Components {
                 try self.value1?.encode(to: encoder)
             }
         }
-        /// Which fetch engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in fetch. "exa" uses Exa Contents API. "openrouter" uses direct HTTP fetch. "firecrawl" uses Firecrawl scrape (requires BYOK). "parallel" uses the Parallel extract API.
+        /// Which fetch engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in fetch. "exa" uses Exa Contents API. "openrouter" uses direct HTTP fetch. "firecrawl" uses Firecrawl scrape. "parallel" uses the Parallel extract API.
         ///
         /// - Remark: Generated from `#/components/schemas/WebFetchEngineEnum`.
         public typealias WebFetchEngineEnum = Swift.String
@@ -47741,7 +47741,7 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/WebSearchEngine`.
         public typealias WebSearchEngine = Swift.String
-        /// Which search engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in search. "exa" forces the Exa search API. "firecrawl" uses Firecrawl (requires BYOK). "parallel" uses the Parallel search API. "perplexity" uses the Perplexity Search API (raw ranked results).
+        /// Which search engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in search. "exa" forces the Exa search API. "firecrawl" uses the Firecrawl search API. "parallel" uses the Parallel search API. "perplexity" uses the Perplexity Search API (raw ranked results).
         ///
         /// - Remark: Generated from `#/components/schemas/WebSearchEngineEnum`.
         public typealias WebSearchEngineEnum = Swift.String
