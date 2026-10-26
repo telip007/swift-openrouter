@@ -36111,7 +36111,7 @@ extension Components {
                 case utcStart = "utc_start"
             }
         }
-        /// Marks an explicit prompt-cache boundary on this content block (OpenAI-style). Everything through the block carrying this marker is part of the candidate cached prefix. Supported natively by OpenAI GPT-5.6 and newer; on providers that use Anthropic-style `cache_control`, OpenRouter converts the marker to that format automatically.
+        /// Marks an explicit prompt-cache boundary on this content block (OpenAI-style). Everything through the block carrying this marker is part of the candidate cached prefix. Supported natively by OpenAI GPT-5.6 and newer; on providers that use Anthropic-style `cache_control`, OpenRouter converts the marker to that format automatically. `ttl` ("30m" or "12h") overrides the request-level `prompt_cache_options.ttl` for this boundary; 12h writes bill at the higher cache-write rate.
         ///
         /// - Remark: Generated from `#/components/schemas/PromptCacheBreakpoint`.
         public struct PromptCacheBreakpoint: Codable, Hashable, Sendable {
@@ -36121,18 +36121,26 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/PromptCacheBreakpoint/mode`.
             public var mode: Components.Schemas.PromptCacheBreakpoint.ModePayload
+            /// - Remark: Generated from `#/components/schemas/PromptCacheBreakpoint/ttl`.
+            public var ttl: Swift.String?
             /// Creates a new `PromptCacheBreakpoint`.
             ///
             /// - Parameters:
             ///   - mode:
-            public init(mode: Components.Schemas.PromptCacheBreakpoint.ModePayload) {
+            ///   - ttl:
+            public init(
+                mode: Components.Schemas.PromptCacheBreakpoint.ModePayload,
+                ttl: Swift.String? = nil
+            ) {
                 self.mode = mode
+                self.ttl = ttl
             }
             public enum CodingKeys: String, CodingKey {
                 case mode
+                case ttl
             }
         }
-        /// Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. Only supported by OpenAI GPT-5.6 and newer.
+        /// Request-level prompt-cache controls. `mode: "explicit"` disables OpenAI-managed breakpoints so only blocks marked with `prompt_cache_breakpoint` are cached. `ttl` sets the minimum cache lifetime for every breakpoint the request writes: "30m" (default) or "12h" (billed at the higher 12h cache-write rate). Only supported by OpenAI GPT-5.6 and newer.
         ///
         /// - Remark: Generated from `#/components/schemas/PromptCacheOptions`.
         public struct PromptCacheOptions: Codable, Hashable, Sendable {
@@ -38167,6 +38175,26 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/ProviderOptions/parasail`.
             public var parasail: Components.Schemas.ProviderOptions.ParasailPayload?
+            /// - Remark: Generated from `#/components/schemas/ProviderOptions/pareto-alpha`.
+            public struct ParetoAlphaPayload: Codable, Hashable, Sendable {
+                /// A container of undocumented properties.
+                public var additionalProperties: [String: OpenAPIRuntime.OpenAPIValueContainer]
+                /// Creates a new `ParetoAlphaPayload`.
+                ///
+                /// - Parameters:
+                ///   - additionalProperties: A container of undocumented properties.
+                public init(additionalProperties: [String: OpenAPIRuntime.OpenAPIValueContainer] = .init()) {
+                    self.additionalProperties = additionalProperties
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeAdditionalProperties(additionalProperties)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderOptions/pareto-alpha`.
+            public var paretoAlpha: Components.Schemas.ProviderOptions.ParetoAlphaPayload?
             /// - Remark: Generated from `#/components/schemas/ProviderOptions/perceptron`.
             public struct PerceptronPayload: Codable, Hashable, Sendable {
                 /// A container of undocumented properties.
@@ -38327,6 +38355,26 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/ProviderOptions/recursal`.
             public var recursal: Components.Schemas.ProviderOptions.RecursalPayload?
+            /// - Remark: Generated from `#/components/schemas/ProviderOptions/recursive`.
+            public struct RecursivePayload: Codable, Hashable, Sendable {
+                /// A container of undocumented properties.
+                public var additionalProperties: [String: OpenAPIRuntime.OpenAPIValueContainer]
+                /// Creates a new `RecursivePayload`.
+                ///
+                /// - Parameters:
+                ///   - additionalProperties: A container of undocumented properties.
+                public init(additionalProperties: [String: OpenAPIRuntime.OpenAPIValueContainer] = .init()) {
+                    self.additionalProperties = additionalProperties
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeAdditionalProperties(additionalProperties)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderOptions/recursive`.
+            public var recursive: Components.Schemas.ProviderOptions.RecursivePayload?
             /// - Remark: Generated from `#/components/schemas/ProviderOptions/reflection`.
             public struct ReflectionPayload: Codable, Hashable, Sendable {
                 /// A container of undocumented properties.
@@ -39190,6 +39238,7 @@ extension Components {
             ///   - openInference:
             ///   - openai:
             ///   - parasail:
+            ///   - paretoAlpha:
             ///   - perceptron:
             ///   - perplexity:
             ///   - phala:
@@ -39198,6 +39247,7 @@ extension Components {
             ///   - quiver:
             ///   - recraft:
             ///   - recursal:
+            ///   - recursive:
             ///   - reflection:
             ///   - reka:
             ///   - relace:
@@ -39337,6 +39387,7 @@ extension Components {
                 openInference: Components.Schemas.ProviderOptions.OpenInferencePayload? = nil,
                 openai: Components.Schemas.ProviderOptions.OpenaiPayload? = nil,
                 parasail: Components.Schemas.ProviderOptions.ParasailPayload? = nil,
+                paretoAlpha: Components.Schemas.ProviderOptions.ParetoAlphaPayload? = nil,
                 perceptron: Components.Schemas.ProviderOptions.PerceptronPayload? = nil,
                 perplexity: Components.Schemas.ProviderOptions.PerplexityPayload? = nil,
                 phala: Components.Schemas.ProviderOptions.PhalaPayload? = nil,
@@ -39345,6 +39396,7 @@ extension Components {
                 quiver: Components.Schemas.ProviderOptions.QuiverPayload? = nil,
                 recraft: Components.Schemas.ProviderOptions.RecraftPayload? = nil,
                 recursal: Components.Schemas.ProviderOptions.RecursalPayload? = nil,
+                recursive: Components.Schemas.ProviderOptions.RecursivePayload? = nil,
                 reflection: Components.Schemas.ProviderOptions.ReflectionPayload? = nil,
                 reka: Components.Schemas.ProviderOptions.RekaPayload? = nil,
                 relace: Components.Schemas.ProviderOptions.RelacePayload? = nil,
@@ -39484,6 +39536,7 @@ extension Components {
                 self.openInference = openInference
                 self.openai = openai
                 self.parasail = parasail
+                self.paretoAlpha = paretoAlpha
                 self.perceptron = perceptron
                 self.perplexity = perplexity
                 self.phala = phala
@@ -39492,6 +39545,7 @@ extension Components {
                 self.quiver = quiver
                 self.recraft = recraft
                 self.recursal = recursal
+                self.recursive = recursive
                 self.reflection = reflection
                 self.reka = reka
                 self.relace = relace
@@ -39632,6 +39686,7 @@ extension Components {
                 case openInference = "open-inference"
                 case openai
                 case parasail
+                case paretoAlpha = "pareto-alpha"
                 case perceptron
                 case perplexity
                 case phala
@@ -39640,6 +39695,7 @@ extension Components {
                 case quiver
                 case recraft
                 case recursal
+                case recursive
                 case reflection
                 case reka
                 case relace
@@ -47395,7 +47451,7 @@ extension Components {
                 try self.value1?.encode(to: encoder)
             }
         }
-        /// Which fetch engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in fetch. "exa" uses Exa Contents API. "openrouter" uses direct HTTP fetch. "firecrawl" uses Firecrawl scrape (requires BYOK). "parallel" uses the Parallel extract API.
+        /// Which fetch engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in fetch. "exa" uses Exa Contents API. "openrouter" uses direct HTTP fetch. "firecrawl" uses Firecrawl scrape. "parallel" uses the Parallel extract API.
         ///
         /// - Remark: Generated from `#/components/schemas/WebFetchEngineEnum`.
         public typealias WebFetchEngineEnum = Swift.String
@@ -47741,7 +47797,7 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/WebSearchEngine`.
         public typealias WebSearchEngine = Swift.String
-        /// Which search engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in search. "exa" forces the Exa search API. "firecrawl" uses Firecrawl (requires BYOK). "parallel" uses the Parallel search API. "perplexity" uses the Perplexity Search API (raw ranked results).
+        /// Which search engine to use. "auto" (default) uses native if the provider supports it, otherwise Exa. "native" forces the provider's built-in search. "exa" forces the Exa search API. "firecrawl" uses the Firecrawl search API. "parallel" uses the Parallel search API. "perplexity" uses the Perplexity Search API (raw ranked results).
         ///
         /// - Remark: Generated from `#/components/schemas/WebSearchEngineEnum`.
         public typealias WebSearchEngineEnum = Swift.String
